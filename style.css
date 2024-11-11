@@ -1,4 +1,14 @@
 /* style.css */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
 .disabled-link {
     color: gray;
     pointer-events: none; /* ¸T¥ÎÂIÀ» */
