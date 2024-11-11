@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js 靜態網頁範例</title>
+    <!-- 引入外部 CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <h1>{{ title }}</h1>
+        <button @click="toggleMessage">切換顯示</button>
+        <!-- 調色盤選擇文字顏色 -->
+        <br>
+        <label for="colorPicker">選擇文字顏色：</label>
+        <input id="colorPicker" type="color" v-model="textColor">
+        <!-- 輸入框改變訊息文字 -->
+        <br>
+        <label for="messageInput">修改顯示的訊息：</label>
+        <input id="messageInput" type="text" v-model="message" placeholder="輸入新的訊息文字">
+        <!-- 輸入框改變文字大小 -->
+        <br>
+        <label for="fontSizeInput">選擇文字大小：</label>
+        <input id="fontSizeInput" type="number" v-model="fontSizeRaw" min="10" max="100" step="1" placeholder="文字大小">
+        <!-- 實際文字 -->
+        <p v-if="showMessage" :style="{ color: textColor, fontSize: fontSize }">
+            <span v-for="(char, index) in displayedMessage" :key="index" class="animate-text">{{ char }}</span>
+        </p>
+    </div>
+
+    <!-- 引入 Vue.js -->
+    <script src="vue.global.js"></script>
+    <!-- 引入外部 JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
