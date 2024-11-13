@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue時間換算工具網站</title>
+    <!-- 引入外部 CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app">
+        <h1>時間換算工具</h1>
+
+        <!-- 輸入欄位 -->
+        <div class="input-group">
+            <label>天: <input v-model="days" @input="validateInput('days')" type="text" /></label>
+            <div v-if="!isValid.days" class="error">僅允許輸入正整數或0</div>
+        </div>
+        <div class="input-group">
+            <label>時: <input v-model="hours" @input="validateInput('hours')" type="text" /></label>
+            <div v-if="!isValid.hours" class="error">僅允許輸入正整數或0</div>
+        </div>
+        <div class="input-group">
+            <label>分: <input v-model="minutes" @input="validateInput('minutes')" type="text" /></label>
+            <div v-if="!isValid.minutes" class="error">僅允許輸入正整數或0</div>
+        </div>
+        <div class="input-group">
+            <label>秒: <input v-model="seconds" @input="validateInput('seconds')" type="text" /></label>
+            <div v-if="!isValid.seconds" class="error">僅允許輸入正整數或0</div>
+        </div>
+
+        <!-- 結果顯示 -->
+        <div class="result">
+            結果: {{ formattedResult }}
+        </div>
+    </div>
+
+    <!-- 引入本地 Vue.js 和外部 JavaScript -->
+    <script src="vue.global.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
