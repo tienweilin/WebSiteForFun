@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>畫畫工具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="toolbar">
+        <!-- 畫筆功能區 -->
+        <div class="tool-group">
+            <button id="toggleBrush" class="active">啟用畫筆</button>
+            <input type="color" id="brushColor" value="#000000">
+            <label for="brushSize">筆刷大小：</label>
+            <input type="range" id="brushSize" min="1" max="50" value="5">
+            <span id="sizeDisplay">5</span>
+        </div>
+        <div class="separator"></div> <!-- 分隔線 -->
+        <!-- 匯出背景設定 -->
+        <div class="tool-group">
+            <label for="bgToggle">匯出時包含背景：</label>
+            <input type="checkbox" id="bgToggle">
+            <label for="bgColor">背景顏色：</label>
+            <input type="color" id="bgColor" value="#ffffff" disabled>
+        </div>
+        <div class="separator"></div> <!-- 分隔線 -->
+        <!-- 清空畫布按鈕 -->
+        <div class="tool-group">
+            <button id="clearCanvas">清空畫布</button>
+        </div>
+        <div class="separator"></div> <!-- 分隔線 -->
+        <!-- 匯出圖檔按鈕，移到最下方 -->
+        <div class="tool-group">
+            <button id="saveImage">儲存圖檔</button>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="canvas"></canvas>
+        <div id="resizeHandle" class="resize-handle"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

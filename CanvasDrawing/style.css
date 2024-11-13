@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+
+.toolbar {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.canvas-container {
+    position: relative;
+}
+
+#canvas {
+    border: 1px solid #000;
+    background-color: #fff;
+    cursor: crosshair;
+    display: block;
+}
+
+.resize-handle {
+    position: absolute;
+    right: -10px; /* 位於畫布右下角，中心點重疊 */
+    bottom: -10px; /* 位於畫布右下角，中心點重疊 */
+    width: 20px; /* 小正方形的寬度 */
+    height: 20px; /* 小正方形的高度 */
+    background-color: #d3d3d3; /* 淡灰色背景 */
+    border: 2px solid #000; /* 黑色邊界 */
+    cursor: se-resize; /* 斜對角拖曳指標 */
+    box-sizing: border-box;
+}
+
+#toggleBrush.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#toggleBrush, #clearCanvas, #saveImage {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#brushSize {
+    margin-left: 5px;
+}
+
+#sizeDisplay {
+    margin-left: 5px;
+}
+
+.separator {
+    border-top: 1px solid #ccc;
+    margin: 10px 0;
+}
+
+#bgToggle {
+    margin-left: 10px;
+}
+
+#bgColor {
+    margin-left: 5px;
+}
+
+#brushColor {
+    margin-left: 10px;
+    cursor: pointer;
+}
