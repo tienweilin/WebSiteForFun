@@ -35,9 +35,19 @@ button {
         color: white;
     }
 
+    button.mark {
+        background-color: green;
+        color: white;
+    }
+
 #start-button {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 18px;
     cursor: pointer;
+    width: 10vw; /* 10% 的視窗寬度 */
+}
+
+.highlight {
+    background-color: yellow; /* 或其他顏色 */
 }
