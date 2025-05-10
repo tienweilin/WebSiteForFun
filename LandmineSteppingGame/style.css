@@ -8,12 +8,19 @@ h1 {
     font-size: 2rem;
 }
 
+.board-container {
+    display: flex;
+    justify-content: center;
+}
+
 #game-board {
     display: grid;
-    grid-template-columns: repeat(8, 50px);
-    grid-template-rows: repeat(8, 50px);
+    grid-template-columns: repeat(var(--board-size), 50px);
+    grid-template-rows: repeat(var(--board-size), 50px);
     gap: 5px;
-    margin-top: 20px;
+    margin: 20px;
+    /*margin: 20px auto;*/ /* 水平置中 */
+    /*width: max-content;*/ /* 讓寬度自適應格子總寬 */
 }
 
 button {

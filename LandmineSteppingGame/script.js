@@ -1,4 +1,5 @@
-let boardSize = 8;
+let boardSize = 9;
+document.documentElement.style.setProperty('--board-size', boardSize);
 let mineCount = 10;
 let mines = [];
 let revealed = [];
@@ -60,12 +61,9 @@ function handleCellClick(event) {
 
     // 如果點擊的是地雷，結束遊戲
     if (mines.some(mine => mine.row === row && mine.col === col)) {
-        button.classList.add('mine');
         gameStarted = false;
         stopTimer();
-        setTimeout(() => {
-            alert('遊戲結束！你踩到地雷！');
-        }, 10); // 延遲一點點時間，讓畫面有機會更新，格子先變紅再跳提示
+        revealMines(row, col); // 顯示所有地雷並在最後跳出提示
     } else {
         revealCell(row, col);  // 揭開安全格子
     }
@@ -95,6 +93,61 @@ function handleMiddleDown(event) {
 
     highlightNeighbors(row, col);
     event.preventDefault(); // 防止頁面滾動
+
+    // 若此格已揭開，檢查是否可以自動揭開周圍格子
+    if (revealed[row][col]) {
+        const neighbors = getNeighbors(row, col);
+        let mineCount = 0;
+        let markedCount = 0;
+
+        // 計算周圍地雷數量與標記數量
+        for (const [r, c] of neighbors) {
+            // 正確地判斷是否是地雷
+            if (mines.some(mine => mine.row === r && mine.col === c)) {
+                mineCount++;
+            }
+
+            const neighborButton = getButton(r, c);
+            if (neighborButton.classList.contains('mark')) {
+                markedCount++;
+            }
+        }
+
+        if (mineCount === markedCount) {
+            // 當標記數與地雷數一致時，逐一檢查標記是否都對
+            for (const [r, c] of neighbors) {
+                const isMine = mines.some(mine => mine.row === r && mine.col === c);
+                const neighborButton = getButton(r, c);
+
+                if (neighborButton.classList.contains('mark') && !isMine) {
+                    neighborButton.classList.add('mine');
+                    gameStarted = false;
+                    stopTimer();
+                    setTimeout(() => {
+                        alert('遊戲結束！你誤標了地雷位置！');
+                    }, 10);
+                    return;
+                }
+            }
+
+            // 全部標記正確 → 揭開其他格子
+            for (const [r, c] of neighbors) {
+                const neighborButton = getButton(r, c);
+                if (!revealed[r][c] && !neighborButton.classList.contains('mark')) {
+                    revealCell(r, c);
+                }
+            }
+        }
+    }
+
+    // 檢查是否勝利
+    if (checkWin()) {
+        gameStarted = false;
+        stopTimer();
+        setTimeout(() => {
+            alert('恭喜，你贏了！');
+        }, 10); // 延遲一點點時間，讓畫面有機會更新，格子先揭開再跳提示
+    }
 }
 function handleMiddleUp(event) {
     isMiddlePressed = false;
@@ -117,12 +170,14 @@ function highlightNeighbors(row, col) {
     neighbors.push([row, col]);
 
     neighbors.forEach(([r, c]) => {
-        const cell = document.querySelector(`button[data-row="${r}"][data-col="${c}"]`);
+        const board = document.getElementById('game-board');
+        const cell = board.querySelector(`button[data-row="${r}"][data-col="${c}"]`);
         if (cell) cell.classList.add('highlight');
     });
 }
 function clearHighlight() {
-    document.querySelectorAll('.highlight').forEach(btn => {
+    const board = document.getElementById('game-board');
+    board.querySelectorAll('.highlight').forEach(btn => {
         btn.classList.remove('highlight');
     });
 }
@@ -153,7 +208,8 @@ function markingMines(row, col, button) {
  * @returns
  */
 function revealCell(row, col) {
-    const button = document.querySelector(`button[data-row="${row}"][data-col="${col}"]`);
+    const board = document.getElementById('game-board');
+    const button = board.querySelector(`button[data-row="${row}"][data-col="${col}"]`);
     if (revealed[row][col]) return;
 
     revealed[row][col] = true;
@@ -175,11 +231,16 @@ function revealCell(row, col) {
     }
 }
 
+/**
+ * 一些輔助判斷程式
+ * @param {any} row
+ * @param {any} col
+ * @returns
+ */
 function countMinesAround(row, col) {
     const neighbors = getNeighbors(row, col);
     return neighbors.filter(([r, c]) => mines.some(mine => mine.row === r && mine.col === c)).length;
 }
-
 function getNeighbors(row, col) {
     const neighbors = [];
     const directions = [
@@ -197,7 +258,15 @@ function getNeighbors(row, col) {
     }
     return neighbors;
 }
+function getButton(row, col) {
+    const board = document.getElementById('game-board');
+    return board.querySelector(`button[data-row="${row}"][data-col="${col}"]`);
+}
 
+/**
+ * 獲勝條件，所有安全格子被揭開
+ * @returns
+ */
 function checkWin() {
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
@@ -209,6 +278,48 @@ function checkWin() {
     return true;
 }
 
+/**
+ * 踩到地雷、逐一顯示地雷的邏輯，並依照隨機延遲時間逐一顯示
+ * @param {any} mines
+ * @param {any} firstClickedRow
+ * @param {any} firstClickedCol
+ */
+function revealMines(firstClickedRow, firstClickedCol) {
+    const delayTimes = [100, 300, 500, 700];
+
+    // 把第一顆（玩家點到的）放在最前面，其他的順序可以照原本或隨機
+    const remainingMines = mines.filter(m => !(m.row === firstClickedRow && m.col === firstClickedCol));
+    const orderedMines = [{ row: firstClickedRow, col: firstClickedCol }, ...remainingMines];
+
+    let index = 0;
+
+    function revealNextMine() {
+        if (index >= orderedMines.length) {
+            setTimeout(() => {
+                alert('遊戲結束！你踩到地雷！'); // 延遲一點點時間，讓畫面有機會更新，格子先變紅再跳提示
+            }, 10);
+            return;
+        }
+
+        const mine = orderedMines[index];
+        const board = document.getElementById('game-board');
+        const mineButton = board.querySelector(`[data-row="${mine.row}"][data-col="${mine.col}"]`);
+        if (mineButton) {
+            mineButton.classList.add('mine');
+        }
+
+        index++;
+        const nextDelay = delayTimes[Math.floor(Math.random() * delayTimes.length)];
+        setTimeout(revealNextMine, nextDelay);
+    }
+
+    revealNextMine(); // 開始顯示第一顆
+}
+
+/**
+ * 計算時間
+ * @returns
+ */
 function startTimer() {
     if (!gameStarted) return;
     timer = setInterval(() => {
@@ -216,7 +327,6 @@ function startTimer() {
         document.getElementById('timer').textContent = `Time: ${seconds}s`;
     }, 1000);
 }
-
 function stopTimer() {
     clearInterval(timer);
 }
